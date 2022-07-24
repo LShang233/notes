@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 给出如下虚拟dom的数据结构，如何实现简单的虚拟dom，渲染到目标dom树
+        let demoNode = ({
+            tagName: 'ul',
+            props: { 'class': 'list' },
+            children: [
+                ({ tagName: 'li', children: ['tenecnt'] }),
+                ({ tagName: 'li', children: ['imweb'] })
+            ]
+        });
+
+        // document.body.appendChild(toDom(demoNode));
+
+        console.log(toDomByInnerHtml(demoNode))
+        document.body.innerHTML = toDomByInnerHtml(demoNode);
+
+        function toDomByInnerHtml(element) {
+            let str = `
+            <${element.tagName} `
+            if (element.props) {
+                let n = element.props.length;
+                for (let key in element.props) {
+                    str += `${key}='${element.props[key]}' `
+                }
+            }
+            str += `>`
+
+            // 添加子节点
+            // 如果子节点是文字节点
+            console.log(element.children == true)
+            if (element.children.length) {
+                for (let i = 0; i < element.children; i++) {
+                    console.log(toDomByInnerHtml(element.children[i]))
+                    str += toDomByInnerHtml(element.children[i]);
+                }
+            }
+
+            str += `</${element.tagName}>
+            `
+            
+            console.log(str)
+            return str;
+        }
+
+
+        function toDom(element) {
+            // 处理父节点
+            let dom = document.createElement(element.tagName);
+            if (element.props) {
+                let n = element.props.length;
+                for (let key in element.props) {
+                    dom.class = element.props[key];
+                    console.log(dom.class)
+                    // dom.createAttribute(key, element.props[key]);
+                }
+            }
+            console.log(dom)
+            // 添加子节点
+            if (element.children) {
+                for (let i = 0; i < element.children; i++) {
+                    console.log(child)
+                    let child = toDom(element.children[i]);
+                    dom.appendChild(child);
+                }
+            }
+            return dom;
+        }
+    </script>
+</head>
+
+<body>
+    <div id="root"></div>
+    
+</body>
+
+</html>
